@@ -1,0 +1,3 @@
+export PATH=$(pwd)/.dev/build/dev:$PATH
+export XS_CONFIG=$(pwd)/config.lua
+export XS_DEBUG=on

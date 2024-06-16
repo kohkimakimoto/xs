@@ -1,0 +1,27 @@
+# This is a docker-compose file that will create a SSH server container that can be used for development purposes.
+#
+# Usage:
+#
+# 1. Start the SSH server container
+# docker-compose up -d
+#
+# 2. Connect to the SSH server
+# ssh -p 2222 -i demos/key xs-test-user@localhost
+
+volumes:
+  xs-dev-ssh-server-data:
+
+services:
+  dev-ssh-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DEV_USER: xs-test-user
+    image: xs-dev-ssh-server
+    ports:
+      - "2222:22"
+    volumes:
+      - xs-dev-ssh-server-data:/home/xs-test-user
+    privileged: true
+    restart: unless-stopped

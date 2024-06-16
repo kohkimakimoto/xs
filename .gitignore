@@ -1,0 +1,21 @@
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+node_modules/
+
+# dev
+/.dev
+
+# dotenv, direnv
+.env
+.envrc
+
+# demo
+!/demo/.envrc
+
+# xs
+/config.lua
+/.sshrc
+
+!.gitkeep
