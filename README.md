@@ -22,7 +22,7 @@ xs [options] [user@]hostname [command]
 XS is a wrapper for the `ssh` command, so it internally runs the `ssh` command while adding useful features.
 Here are some features XS offers:
 
-- **Configuration by Lua script**: You can define configuration in Lua script that produces the ssh_config (usually `~/.ssh/config`) file. See [Configuration](#configuration) for more details.
+- **Configuration by Lua script**: You can define configuration in [Lua](https://www.lua.org/manual/5.1/) script that produces the ssh_config (usually `~/.ssh/config`) file. See [Configuration](#configuration) for more details.
 - **Zsh completion**: XS supports zsh-completion. See [Zsh Completion](#zsh-completion) for more details.
 - **Hooks**: XS supports hooks. Hooks execute arbitrary commands before and after the SSH connection. See [Hooks](#hooks) for more details.
 
@@ -283,7 +283,7 @@ debuglogger.printf_no_prefix("This is a debug message")
 
 ### package.path
 
-XS automatically adds the directory where the configuration file is located to the Lua package path,
+XS automatically adds the directory where the configuration file is located to the Lua [package path](https://www.lua.org/manual/5.1/manual.html#pdf-package.path),
 so you can use `require` to load Lua modules in the same directory as the configuration file.
 
 For example, if you have a Lua module `mylib.lua` in the same directory as the configuration file, you can load it like this:
