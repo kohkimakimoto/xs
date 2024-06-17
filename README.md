@@ -191,7 +191,7 @@ This hook runs on your local machine before the SSH connection is established.
 #### `on_after_connect`
 
 It is a hook executed after connecting to the host.
-It is the "remote hook" that run on the remote machine after the SSH connection is established.
+It is a "remote hook" that runs on a remote machine after the SSH connection has been established.
 However, if you specify a Lua function, it will still be executed on your local machine because any Lua code is evaluated by XS running on your local machine.
 
 #### `on_after_disconnect`
