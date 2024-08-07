@@ -2,7 +2,7 @@
 
 SHELL := bash
 PATH := $(CURDIR)/.dev/gopath/bin:$(PATH)
-VERSION := 0.0.1
+VERSION := 0.0.2
 COMMIT_HASH := $(shell git rev-parse HEAD)
 BUILD_LDFLAGS = "-s -w -X github.com/kohkimakimoto/xs/internal.CommitHash=$(COMMIT_HASH) -X github.com/kohkimakimoto/xs/internal.Version=$(VERSION)"
 

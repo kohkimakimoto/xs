@@ -93,71 +93,73 @@ func runAction(cCtx *cli.Context) error {
 	hostname := extractHostname(params[0])
 	host := cfg.NewHostFilter().GetHostByName(hostname)
 	if host == nil {
-		return fmt.Errorf("unknown host: %s", hostname)
+		logger.Printf("host not found: %s", hostname)
+	} else {
+		logger.Printf("find host: %s", host.Name)
 	}
 
-	logger.Printf("find host: %s", host.Name)
-
-	if len(params) == 1 {
-		// If it runs without command (shell login), run hooks
-		if len(host.OnBeforeConnect) > 0 {
-			logger.Printf("run hooks: on_before_disconnect")
-			script, err := createHookScript(L, host.OnBeforeConnect)
-			if err != nil {
-				return err
-			}
-			logger.Printf("hook script (local):")
-			logger.PrintfNoPrefix("%s", script)
-			if err := runHookScript(script); err != nil {
-				return err
-			}
-		}
-
-		if len(host.OnAfterDisconnect) > 0 {
-			// register on_after_disconnect hooks
-			defer func() {
-				logger.Printf("run hooks: run on_after_disconnect")
-				script, err := createHookScript(L, host.OnAfterDisconnect)
+	if host != nil {
+		if len(params) == 1 {
+			// If it runs without command (shell login), run hooks
+			if len(host.OnBeforeConnect) > 0 {
+				logger.Printf("run hooks: on_before_disconnect")
+				script, err := createHookScript(L, host.OnBeforeConnect)
 				if err != nil {
-					_, _ = fmt.Fprintf(cCtx.App.ErrWriter, "failed to run on_after_disconnect: %v\n", err)
+					return err
 				}
 				logger.Printf("hook script (local):")
 				logger.PrintfNoPrefix("%s", script)
 				if err := runHookScript(script); err != nil {
-					_, _ = fmt.Fprintf(cCtx.App.ErrWriter, "failed to run on_after_disconnect: %v\n", err)
+					return err
 				}
-			}()
-		}
-	}
+			}
 
-	if len(params) == 1 && len(host.OnAfterConnect) > 0 {
-		// run on_after_connect hooks
-		logger.Printf("run hooks: run on_after_connect")
-		script, err := createHookScript(L, host.OnAfterConnect)
-		if err != nil {
-			return err
-		}
-		// append shell login command to the end of the script
-		script += "\nexec $SHELL\n"
-
-		logger.Printf("hook script (remote):")
-		logger.PrintfNoPrefix("%s", script)
-
-		hasTOption := false
-		for _, opt := range options {
-			if opt == "-t" {
-				hasTOption = true
-				break
+			if len(host.OnAfterDisconnect) > 0 {
+				// register on_after_disconnect hooks
+				defer func() {
+					logger.Printf("run hooks: run on_after_disconnect")
+					script, err := createHookScript(L, host.OnAfterDisconnect)
+					if err != nil {
+						_, _ = fmt.Fprintf(cCtx.App.ErrWriter, "failed to run on_after_disconnect: %v\n", err)
+					}
+					logger.Printf("hook script (local):")
+					logger.PrintfNoPrefix("%s", script)
+					if err := runHookScript(script); err != nil {
+						_, _ = fmt.Fprintf(cCtx.App.ErrWriter, "failed to run on_after_disconnect: %v\n", err)
+					}
+				}()
 			}
 		}
-		if !hasTOption {
-			// If it does not have the "-t" option, append it to the list of options.
-			// The on_after_connect hook uses the ssh command with an argument to run the script.
-			// This means that, by default, the ssh command does not allocate a tty.
-			options = append(options, "-t")
-		}
 
-		params = append(params, script)
+		if len(params) == 1 && len(host.OnAfterConnect) > 0 {
+			// run on_after_connect hooks
+			logger.Printf("run hooks: run on_after_connect")
+			script, err := createHookScript(L, host.OnAfterConnect)
+			if err != nil {
+				return err
+			}
+			// append shell login command to the end of the script
+			script += "\nexec $SHELL\n"
+
+			logger.Printf("hook script (remote):")
+			logger.PrintfNoPrefix("%s", script)
+
+			hasTOption := false
+			for _, opt := range options {
+				if opt == "-t" {
+					hasTOption = true
+					break
+				}
+			}
+			if !hasTOption {
+				// If it does not have the "-t" option, append it to the list of options.
+				// The on_after_connect hook uses the ssh command with an argument to run the script.
+				// This means that, by default, the ssh command does not allocate a tty.
+				options = append(options, "-t")
+			}
+
+			params = append(params, script)
+		}
 	}
 
 	sshCommandArgs := []string{"-F", tmpSSHConfigFile}
