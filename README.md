@@ -298,6 +298,7 @@ I implemented some Lua modules for XS. See [ext](./ext) directory. These modules
 
 - [terminal_profile](./ext/terminal_profile.lua): A module that provides a hook for `on_before_connect` and `on_after_disconnect` to change the macOS terminal profile.
 - [sshrc](./ext/sshrc.lua): A module that provides a hook for `on_after_connect` to implement SSHRC functionality, allowing you to transfer your local `.sshrc` file to the remote server.
+- [dhcpd_leases](./ext/dhcpd_leases.lua): A module that parses the `/var/db/dhcpd_leases` file and provides functions to search for specific entries.
 
 You can use these modules by copying them into the same directory as the configuration file and loading them with `require`.
 For more details, see the comments in the Lua module file.
