@@ -292,9 +292,9 @@ For example, if you have a Lua module `mylib.lua` in the same directory as the c
 local mylib = require "mylib"
 ```
 
-## Official Lua Modules (Reusable Hooks)
+## Official Lua Modules
 
-I implemented some Lua modules for XS. See [ext](./ext) directory. These modules provide useful [hooks](#hooks) for XS.
+I implemented some Lua modules for XS. See [ext](./ext) directory.
 
 - [terminal_profile](./ext/terminal_profile.lua): A module that provides a hook for `on_before_connect` and `on_after_disconnect` to change the macOS terminal profile.
 - [sshrc](./ext/sshrc.lua): A module that provides a hook for `on_after_connect` to implement SSHRC functionality, allowing you to transfer your local `.sshrc` file to the remote server.
