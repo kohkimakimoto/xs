@@ -1,6 +1,7 @@
 # XS
 
 [![test](https://github.com/kohkimakimoto/xs/actions/workflows/test.yml/badge.svg)](https://github.com/kohkimakimoto/xs/actions/workflows/test.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kohkimakimoto/xs/blob/main/LICENSE)
 
 XS is a SSH command wrapper that enhances your SSH operations.
 
