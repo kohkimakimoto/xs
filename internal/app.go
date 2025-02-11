@@ -24,7 +24,8 @@ func newApp() *cli.App {
 	app.Commands = []*cli.Command{
 		SSHConfigCommand,
 		ListCommand,
-		ZshCompletion,
+		ZshCompletionCommand,
+		XscpFunctionCommand,
 	}
 	app.Before = func(cCtx *cli.Context) error {
 		debuglogger.Bind(cCtx.App, debuglogger.New(cCtx.App.ErrWriter, getDebugFlag(), getNoColorFlag()))
