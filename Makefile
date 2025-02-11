@@ -5,7 +5,7 @@ PATH := $(CURDIR)/.dev/go-tools/bin:$(PATH)
 COMMIT_HASH := $(shell git rev-parse HEAD)
 
 # Release version: You need to update this version when you release the project.
-VERSION := 0.0.3
+VERSION := 0.0.4
 BUILD_LDFLAGS = "-s -w -X github.com/kohkimakimoto/xs/internal.CommitHash=$(COMMIT_HASH) -X github.com/kohkimakimoto/xs/internal.Version=$(VERSION)"
 
 # Load .env file if it exists.

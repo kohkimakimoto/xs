@@ -10,7 +10,7 @@ import (
 	"text/template"
 )
 
-var ZshCompletion = &cli.Command{
+var ZshCompletionCommand = &cli.Command{
 	Name:                   "zsh-completion",
 	Usage:                  "Output zsh completion script to STDOUT",
 	UseShortOptionHandling: true,

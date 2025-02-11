@@ -20,6 +20,7 @@ _xs_builtin_commands() {
     "ls:List defined hosts"
     "ssh-config:Output ssh_config to STDOUT"
     "zsh-completion:Output zsh completion script to STDOUT"
+    "xscp-function:Output xscp function code to STDOUT"
   )
   _describe -t builtin_command "builtin command" __xs_builtin_commands
 }
