@@ -364,6 +364,21 @@ $ xs zsh-completion
 # ...(zh completion script)...
 ```
 
+### `xs xscp-function`
+
+Output xscp function code to STDOUT.
+
+```sh
+$ xs xscp-function
+# This is a shell function definition for xs
+# If you want to use this script, add the following line to your .zshrc
+# ----------------------------------
+# eval "$(xs xscp-function)"
+# ----------------------------------
+
+# ...(xscp function code)...
+```
+
 ## Environment Variables
 
 You can change the default behavior of XS by setting the following environment variables.
