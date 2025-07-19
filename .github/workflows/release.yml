@@ -1,8 +1,12 @@
-# Before running this workflow, you need to update the VERSION defined in the Makefile.
+# This workflow is triggered when a version tag (vX.X.X) is pushed to the repository.
+# Before triggering this workflow, ensure the VERSION in Makefile matches the tag version (without 'v' prefix).
+# The workflow automatically checks version consistency and fails if they don't match.
 name: release
 permissions: write-all
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
   release:
@@ -13,7 +17,31 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+      - name: Verify version consistency
+        run: |
+          # Extract tag version (remove 'v' prefix)
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          echo "Tag version: $TAG_VERSION"
+
+          # Extract version from Makefile
+          MAKEFILE_VERSION=$(grep '^VERSION := ' Makefile | cut -d' ' -f3)
+          echo "Makefile version: $MAKEFILE_VERSION"
+
+          # Check if versions match
+          if [ "$TAG_VERSION" != "$MAKEFILE_VERSION" ]; then
+            echo "Error: Tag version ($TAG_VERSION) does not match Makefile version ($MAKEFILE_VERSION)"
+            exit 1
+          fi
+
+          echo "Version check passed: $TAG_VERSION"
       - run: make setup
-      - run: make release
+      - run: make build/dist
+      - name: Create GitHub release
+        run: |
+          # Extract full tag (e.g., v1.2.3)
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+
+          # Create release using ghr
+          ghr -n "${TAG_NAME}" -b "Release ${TAG_NAME}" "${TAG_NAME}" .dev/build/dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -4,7 +4,6 @@ SHELL := bash
 PATH := $(CURDIR)/.dev/go-tools/bin:$(PATH)
 COMMIT_HASH := $(shell git rev-parse HEAD)
 
-# Release version: You need to update this version when you release the project.
 VERSION := 0.0.4
 BUILD_LDFLAGS = "-s -w -X github.com/kohkimakimoto/xs/internal.CommitHash=$(COMMIT_HASH) -X github.com/kohkimakimoto/xs/internal.Version=$(VERSION)"
 
@@ -96,28 +95,6 @@ test/cover: ## Run tests with coverage report
 .PHONY: open/coverage
 open/coverage: ## Open coverage report
 	@open $(CURDIR)/.dev/test/coverage.html
-
-
-# --------------------------------------------------------------------------------------
-# Go commands
-# --------------------------------------------------------------------------------------
-.PHONY: go-generate
-go-generate: ## Run go generate
-	@go generate ./...
-
-.PHONY: go-mod-tidy
-go-mod-tidy: ## Run go mod tidy
-	@go mod tidy
-
-
-# --------------------------------------------------------------------------------------
-# Release
-# --------------------------------------------------------------------------------------
-.PHONY: release
-release: guard-GITHUB_TOKEN ## Release the project with the specified version and tags it
-	@$(MAKE) clean/build
-	@$(MAKE) build/dist
-	@ghr -n "v$(VERSION)" -b "Release v$(VERSION)" v$(VERSION) .dev/build/dist
 
 
 # --------------------------------------------------------------------------------------
