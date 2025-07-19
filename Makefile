@@ -107,11 +107,3 @@ demo/ssh-server/up: ## Start dev ssh server
 .PHONY: demo/ssh-server/down
 demo/ssh-server/down: ## Stop dev ssh server
 	@cd demo && docker-compose down
-
-
-# --------------------------------------------------------------------------------------
-# Utilities
-# --------------------------------------------------------------------------------------
-# This is a utility for checking variable definition
-guard-%:
-	@if [[ -z '${${*}}' ]]; then echo 'ERROR: variable $* not set' && exit 1; fi
