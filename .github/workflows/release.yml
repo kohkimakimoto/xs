@@ -41,7 +41,8 @@ jobs:
           # Extract full tag (e.g., v1.2.3)
           TAG_NAME=${GITHUB_REF#refs/tags/}
 
-          # Create release using ghr
+          # Add go-tools/bin to PATH and create release using ghr
+          export PATH="$(pwd)/.dev/go-tools/bin:$PATH"
           ghr -n "${TAG_NAME}" -b "Release ${TAG_NAME}" "${TAG_NAME}" .dev/build/dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
