@@ -1,6 +1,6 @@
 module github.com/kohkimakimoto/xs
 
-go 1.22.1
+go 1.24.5
 
 require (
 	github.com/Songmu/wrapcommander v0.1.0
