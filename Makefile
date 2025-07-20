@@ -4,7 +4,7 @@ SHELL := bash
 PATH := $(CURDIR)/.dev/go-tools/bin:$(PATH)
 COMMIT_HASH := $(shell git rev-parse HEAD)
 
-VERSION := 0.0.6
+VERSION := 0.0.7
 BUILD_LDFLAGS = "-s -w -X github.com/kohkimakimoto/xs/internal.CommitHash=$(COMMIT_HASH) -X github.com/kohkimakimoto/xs/internal.Version=$(VERSION)"
 
 # Load .env file if it exists.
