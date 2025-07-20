@@ -180,7 +180,8 @@ example on_before_connect hook (return value)
 # after the "on_before_connect" hook process, XS connects to the host.
 ```
 
-> :exclamation: Hooks are executed only when you use XS without any command just like `xs your-remote-server1`. If you specify a command like `xs your-remote-server1 ls`, XS does not execute any hooks.
+> [!IMPORTANT]
+> Hooks are executed only when you use XS without any command just like `xs your-remote-server1`. If you specify a command like `xs your-remote-server1 ls`, XS does not execute any hooks.
 
 For more information. See the following description of each hook.
 
