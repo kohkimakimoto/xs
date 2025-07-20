@@ -6,7 +6,7 @@ import (
 	luadebuglogger "github.com/kohkimakimoto/xs/internal/lualib/debuglogger"
 	"github.com/kohkimakimoto/xs/internal/lualib/shell"
 	"github.com/kohkimakimoto/xs/internal/lualib/template"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"github.com/yuin/gopher-lua"
 	"os"
 	"path/filepath"
@@ -86,7 +86,7 @@ func (e *ConfigLoadError) Error() string {
 	return "failed to load config (" + e.Err.Error() + ")"
 }
 
-func newConfig(cCtx *cli.Context) (*Config, *lua.LState, error) {
+func newConfig(cmd *cli.Command) (*Config, *lua.LState, error) {
 	configFilePath := getConfigFilePath()
 	if absPath, err := filepath.Abs(configFilePath); err == nil {
 		configFilePath = absPath
@@ -110,7 +110,7 @@ func newConfig(cCtx *cli.Context) (*Config, *lua.LState, error) {
 	xsObject.RawSetString("config_dir", lua.LString(filepath.Dir(configFilePath)))
 
 	// Load built-in modules
-	L.PreloadModule("xs.debuglogger", luadebuglogger.Loader(debuglogger.Get(cCtx)))
+	L.PreloadModule("xs.debuglogger", luadebuglogger.Loader(debuglogger.Get(cmd)))
 	L.PreloadModule("xs.shell", shell.Loader)
 	L.PreloadModule("xs.template", template.Loader)
 

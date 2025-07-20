@@ -29,7 +29,6 @@ setup: ## Setup development environment
 	@echo "==> Setting up development environment..."
 	@mkdir -p $(CURDIR)/.dev/go-tools
 	@export GOPATH=$(CURDIR)/.dev/go-tools && \
-		go install honnef.co/go/tools/cmd/staticcheck@latest && \
 		go install github.com/Songmu/goxz/cmd/goxz@latest && \
 		go install github.com/tcnksm/ghr@latest && \
 		go install github.com/axw/gocov/gocov@latest && \
@@ -70,10 +69,6 @@ build-clean: ## Clean up build artifacts
 .PHONY: format
 format: ## Format source code
 	@go fmt ./...
-
-.PHONY: lint
-lint: ## Lint source code
-	@staticcheck ./...
 
 .PHONY: test
 test: ## Run tests

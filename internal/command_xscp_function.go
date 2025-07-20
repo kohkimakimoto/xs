@@ -2,9 +2,10 @@ package internal
 
 import (
 	"bytes"
+	"context"
 	_ "embed"
 	"github.com/kohkimakimoto/xs/internal/debuglogger"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"os"
 	"text/template"
 )
@@ -13,10 +14,11 @@ var XscpFunctionCommand = &cli.Command{
 	Name:                   "xscp-function",
 	Usage:                  "Output xscp function code to STDOUT",
 	UseShortOptionHandling: true,
-	Before: func(cCtx *cli.Context) error {
+	CustomHelpTemplate:     helpTemplate,
+	Before: func(ctx context.Context, cmd *cli.Command) (context.Context, error) {
 		// Disable debug output because it will break the script.
-		debuglogger.Get(cCtx).IsDebug = false
-		return nil
+		debuglogger.Get(cmd).IsDebug = false
+		return ctx, nil
 	},
 	Action: xscpFunctionAction,
 	Flags: []cli.Flag{
@@ -33,8 +35,8 @@ var XscpFunctionCommand = &cli.Command{
 var xscpTemplateString string
 var xscpTmpl = template.Must(template.New("T").Parse(xscpTemplateString))
 
-func xscpFunctionAction(cCtx *cli.Context) error {
-	name := cCtx.String("name")
+func xscpFunctionAction(ctx context.Context, cmd *cli.Command) error {
+	name := cmd.String("name")
 	if name == "" {
 		name = "xscp"
 	}
@@ -53,7 +55,7 @@ func xscpFunctionAction(cCtx *cli.Context) error {
 		return err
 	}
 
-	if _, err := cCtx.App.Writer.Write(b.Bytes()); err != nil {
+	if _, err := cmd.Writer.Write(b.Bytes()); err != nil {
 		return err
 	}
 	return nil
