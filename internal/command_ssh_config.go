@@ -1,25 +1,27 @@
 package internal
 
 import (
+	"context"
 	"github.com/kohkimakimoto/xs/internal/debuglogger"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 var SSHConfigCommand = &cli.Command{
 	Name:                   "ssh-config",
 	Usage:                  "Output ssh_config to STDOUT",
 	UseShortOptionHandling: true,
-	Before: func(cCtx *cli.Context) error {
+	CustomHelpTemplate:     helpTemplate,
+	Before: func(ctx context.Context, cmd *cli.Command) (context.Context, error) {
 		// Disable debug output because it will break the ssh_config output.
-		debuglogger.Get(cCtx).IsDebug = false
-		return nil
+		debuglogger.Get(cmd).IsDebug = false
+		return ctx, nil
 	},
 	Action: sshConfigAction,
 	Flags:  []cli.Flag{},
 }
 
-func sshConfigAction(cCtx *cli.Context) error {
-	cfg, L, err := newConfig(cCtx)
+func sshConfigAction(ctx context.Context, cmd *cli.Command) error {
+	cfg, L, err := newConfig(cmd)
 	if err != nil {
 		return err
 	}
@@ -29,7 +31,7 @@ func sshConfigAction(cCtx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	if _, err := cCtx.App.Writer.Write(sshConfigContent); err != nil {
+	if _, err := cmd.Writer.Write(sshConfigContent); err != nil {
 		return err
 	}
 	return nil

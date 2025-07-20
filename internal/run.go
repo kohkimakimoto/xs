@@ -1,10 +1,11 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	"github.com/Songmu/wrapcommander"
 	"github.com/kohkimakimoto/xs/internal/debuglogger"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"github.com/yuin/gopher-lua"
 	"os"
 	"os/exec"
@@ -12,10 +13,10 @@ import (
 	"strings"
 )
 
-func runAction(cCtx *cli.Context) error {
-	logger := debuglogger.Get(cCtx)
+func runAction(ctx context.Context, cmd *cli.Command) error {
+	logger := debuglogger.Get(cmd)
 
-	args := cCtx.Args().Slice()
+	args := cmd.Args().Slice()
 
 	// extract SSH options
 	var options []string
@@ -75,7 +76,7 @@ func runAction(cCtx *cli.Context) error {
 
 	logger.Printf("generated ssh config file: %s", tmpSSHConfigFile)
 
-	cfg, L, err := newConfig(cCtx)
+	cfg, L, err := newConfig(cmd)
 	if err != nil {
 		return err
 	}
@@ -120,12 +121,12 @@ func runAction(cCtx *cli.Context) error {
 					logger.Printf("run hooks: run on_after_disconnect")
 					script, err := createHookScript(L, host.OnAfterDisconnect)
 					if err != nil {
-						_, _ = fmt.Fprintf(cCtx.App.ErrWriter, "failed to run on_after_disconnect: %v\n", err)
+						_, _ = fmt.Fprintf(cmd.ErrWriter, "failed to run on_after_disconnect: %v\n", err)
 					}
 					logger.Printf("hook script (local):")
 					logger.PrintfNoPrefix("%s", script)
 					if err := runHookScript(script); err != nil {
-						_, _ = fmt.Fprintf(cCtx.App.ErrWriter, "failed to run on_after_disconnect: %v\n", err)
+						_, _ = fmt.Fprintf(cmd.ErrWriter, "failed to run on_after_disconnect: %v\n", err)
 					}
 				}()
 			}
@@ -165,14 +166,14 @@ func runAction(cCtx *cli.Context) error {
 	sshCommandArgs := []string{"-F", tmpSSHConfigFile}
 	sshCommandArgs = append(sshCommandArgs, options...)
 	sshCommandArgs = append(sshCommandArgs, params...)
-	cmd := exec.Command("ssh", sshCommandArgs...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	eCmd := exec.Command("ssh", sshCommandArgs...)
+	eCmd.Stdin = os.Stdin
+	eCmd.Stdout = os.Stdout
+	eCmd.Stderr = os.Stderr
 
-	logger.Printf("underlying ssh command: %v", cmd.Args)
+	logger.Printf("underlying ssh command: %v", eCmd.Args)
 
-	if err = cmd.Run(); err != nil {
+	if err = eCmd.Run(); err != nil {
 		return cli.Exit(err, wrapcommander.ResolveExitCode(err))
 	}
 	return nil

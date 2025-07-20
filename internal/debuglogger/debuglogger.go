@@ -3,7 +3,7 @@ package debuglogger
 import (
 	"fmt"
 	"github.com/jedib0t/go-pretty/v6/text"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"io"
 )
 
@@ -51,12 +51,12 @@ func (l *Logger) PrintfNoPrefix(format string, a ...any) {
 	}
 }
 
-func Bind(app *cli.App, l *Logger) {
-	app.Metadata["logger"] = l
+func Bind(cmd *cli.Command, l *Logger) {
+	cmd.Metadata["logger"] = l
 }
 
-func Get(cCtx *cli.Context) *Logger {
-	l, ok := cCtx.App.Metadata["logger"].(*Logger)
+func Get(cmd *cli.Command) *Logger {
+	l, ok := cmd.Root().Metadata["logger"].(*Logger)
 	if !ok {
 		return nil
 	}
