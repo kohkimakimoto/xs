@@ -35,7 +35,7 @@ jobs:
 
           echo "Version check passed: $TAG_VERSION"
       - run: make setup
-      - run: make build/dist
+      - run: make build-dist
       - name: Create GitHub release
         run: |
           # Extract full tag (e.g., v1.2.3)

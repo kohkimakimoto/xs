@@ -40,10 +40,6 @@ setup: ## Setup development environment
 clean: ## Clean up development environment
 	@rm -rf .dev
 
-.PHONY: clean/build
-clean/build: ## Clean up build directory
-	@rm -rf .dev/build
-
 
 # --------------------------------------------------------------------------------------
 # Build
@@ -53,14 +49,19 @@ build: ## Build dev binary
 	@mkdir -p .dev/build/dev
 	@CGO_ENABLED=0 go build -ldflags=$(BUILD_LDFLAGS) -o .dev/build/dev/xs ./cmd/xs
 
-build/release: ## Build release binary
+.PHONY: build-release
+build-release: ## Build release binary
 	@mkdir -p .dev/build/release
 	@CGO_ENABLED=0 go build -ldflags=$(BUILD_LDFLAGS) -trimpath -o .dev/build/release/xs ./cmd/xs
 
-.PHONY: build/dist
-build/dist: ## Build cross-platform binaries for distribution
+.PHONY: build-dist
+build-dist: ## Build cross-platform binaries for distribution
 	@mkdir -p .dev/build/dist
 	@CGO_ENABLED=0 goxz -n xs -os=linux,darwin -static -build-ldflags=$(BUILD_LDFLAGS) -trimpath -d=.dev/build/dist ./cmd/xs
+
+.PHONY: build-clean
+build-clean: ## Clean up build artifacts
+	@rm -rf .dev/build
 
 
 # --------------------------------------------------------------------------------------
@@ -78,32 +79,32 @@ lint: ## Lint source code
 test: ## Run tests
 	@go test -race -timeout 30m ./...
 
-.PHONY: test/short
-test/short: ## Run short tests
+.PHONY: test-short
+test-short: ## Run short tests
 	@go test -short -race -timeout 30m ./...
 
-.PHONY: test/verbos
-test/verbose: ## Run tests with verbose outputting
+.PHONY: test-verbose
+test-verbose: ## Run tests with verbose outputting
 	@go test -race -timeout 30m -v ./...
 
-.PHONY: test/cover
-test/cover: ## Run tests with coverage report
+.PHONY: test-cover
+test-cover: ## Run tests with coverage report
 	@mkdir -p $(CURDIR)/.dev/test
 	@go test -race -coverpkg=./... -coverprofile=$(CURDIR)/.dev/test/coverage.out ./...
 	@gocov convert $(CURDIR)/.dev/test/coverage.out | gocov-html > $(CURDIR)/.dev/test/coverage.html
 
-.PHONY: open/coverage
-open/coverage: ## Open coverage report
+.PHONY: test-cover-open
+test-cover-open: ## Open coverage report in browser
 	@open $(CURDIR)/.dev/test/coverage.html
 
 
 # --------------------------------------------------------------------------------------
 # SSH Server for demo/dev
 # --------------------------------------------------------------------------------------
-.PHONY: demo/ssh-server/up
-demo/ssh-server/up: ## Start dev ssh server
+.PHONY: demo-ssh-server-up
+demo-ssh-server-up: ## Start dev ssh server
 	@cd demo && docker-compose up -d
 
-.PHONY: demo/ssh-server/down
-demo/ssh-server/down: ## Stop dev ssh server
+.PHONY: demo-ssh-server-down
+demo-ssh-server-down: ## Stop dev ssh server
 	@cd demo && docker-compose down
