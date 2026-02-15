@@ -6,6 +6,46 @@
 
 XS is a SSH command wrapper that enhances your SSH operations.
 
+Table of Contents:
+- [Overview](#overview)
+  - [Demo](#demo)
+    - [Zsh Completion and Change Terminal Color](#zsh-completion-and-change-terminal-color)
+    - [Transfer dotfiles by SSHRC module](#transfer-dotfiles-by-sshrc-module)
+- [Installation](#installation)
+  - [Homebrew](#homebrew)
+  - [Pre-built Binary](#pre-built-binary)
+- [Configuration](#configuration)
+  - [Hosts](#hosts)
+    - [Syntax](#syntax)
+    - [Example](#example)
+    - [Parameters](#parameters)
+  - [Hooks](#hooks)
+    - [`on_before_connect`](#on_before_connect)
+    - [`on_after_connect`](#on_after_connect)
+    - [`on_after_disconnect`](#on_after_disconnect)
+- [Lua VM](#lua-vm)
+  - [`xs` Global Variable](#xs-global-variable)
+    - [Usage](#usage)
+  - [Built-in Modules](#built-in-modules)
+    - [`xs.shell`](#xsshell)
+    - [`xs.template`](#xstemplate)
+    - [`xs.debuglogger`](#xsdebuglogger)
+  - [package.path](#packagepath)
+- [Official Lua Modules](#official-lua-modules)
+- [Zsh Completion](#zsh-completion)
+- [Built-in Commands](#built-in-commands)
+  - [`xs list`](#xs-list)
+  - [`xs ssh-config`](#xs-ssh-config)
+  - [`xs zsh-completion`](#xs-zsh-completion)
+  - [`xs xscp-function`](#xs-xscp-function)
+- [Environment Variables](#environment-variables)
+  - [`XS_CONFIG`](#xs_config)
+  - [`XS_DEBUG`](#xs_debug)
+  - [`XS_NO_COLOR`](#xs_no_color)
+- [Another Similar Tool](#another-similar-tool)
+- [Author](#author)
+- [License](#license)
+
 ## Overview
 
 XS is used in the same manner as the `ssh` command, so you can use it as a drop-in replacement for the `ssh` command.
@@ -42,7 +82,13 @@ I implemented a demo to show XS functionalities. You can see the configration of
 
 ## Installation
 
-XS is provided as a single binary command `xs`. You can download it and drop it in your $PATH.
+### Homebrew
+
+```bash
+brew install kohkimakimoto/tap/xs
+```
+
+### Pre-built Binary
 
 [Download the latest version](https://github.com/kohkimakimoto/xs/releases/latest)
 
