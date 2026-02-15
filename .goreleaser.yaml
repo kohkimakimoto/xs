@@ -1,0 +1,49 @@
+version: 2
+
+project_name: xs
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: xs
+    main: ./cmd/xs
+    binary: xs
+    env:
+      - CGO_ENABLED=0
+    targets:
+      - linux_amd64
+      - linux_arm64
+      - darwin_amd64
+      - darwin_arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/kohkimakimoto/xs/internal.Version={{.Version}}
+      - -X github.com/kohkimakimoto/xs/internal.CommitHash={{.ShortCommit}}
+
+archives:
+  - formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  disable: true
+
+release:
+  github:
+    owner: kohkimakimoto
+    name: xs
+  draft: false
+  # Automatically marks as prerelease if the tag contains a hyphen (e.g. v1.0.0-rc1).
+  prerelease: auto
+  # Overwrites the existing release if re-run for the same tag.
+  mode: replace

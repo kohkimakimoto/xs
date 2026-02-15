@@ -2,10 +2,9 @@
 
 SHELL := bash
 PATH := $(CURDIR)/.dev/go-tools/bin:$(PATH)
-COMMIT_HASH := $(shell git rev-parse HEAD)
+COMMIT_HASH := $(shell git rev-parse --short HEAD)
 
-VERSION := 0.0.7
-BUILD_LDFLAGS = "-s -w -X github.com/kohkimakimoto/xs/internal.CommitHash=$(COMMIT_HASH) -X github.com/kohkimakimoto/xs/internal.Version=$(VERSION)"
+BUILD_LDFLAGS = "-s -w -X github.com/kohkimakimoto/xs/internal.CommitHash=$(COMMIT_HASH)"
 
 # Load .env file if it exists.
 ifneq (,$(wildcard ./.env))
@@ -29,8 +28,6 @@ setup: ## Setup development environment
 	@echo "==> Setting up development environment..."
 	@mkdir -p $(CURDIR)/.dev/go-tools
 	@export GOPATH=$(CURDIR)/.dev/go-tools && \
-		go install github.com/Songmu/goxz/cmd/goxz@latest && \
-		go install github.com/tcnksm/ghr@latest && \
 		go install github.com/axw/gocov/gocov@latest && \
 		go install github.com/matm/gocov-html/cmd/gocov-html@latest
 	@export GOPATH=$(CURDIR)/.dev/go-tools && go clean -modcache && rm -rf $(CURDIR)/.dev/go-tools/pkg
@@ -52,11 +49,6 @@ build: ## Build dev binary
 build-release: ## Build release binary
 	@mkdir -p .dev/build/release
 	@CGO_ENABLED=0 go build -ldflags=$(BUILD_LDFLAGS) -trimpath -o .dev/build/release/xs ./cmd/xs
-
-.PHONY: build-dist
-build-dist: ## Build cross-platform binaries for distribution
-	@mkdir -p .dev/build/dist
-	@CGO_ENABLED=0 goxz -n xs -os=linux,darwin -static -build-ldflags=$(BUILD_LDFLAGS) -trimpath -d=.dev/build/dist ./cmd/xs
 
 .PHONY: build-clean
 build-clean: ## Clean up build artifacts
